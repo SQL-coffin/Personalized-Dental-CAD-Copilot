@@ -20,6 +20,7 @@
 | 03 | [实验协议](docs/03-experiment-protocol.md) | 假设—对照—终点映射、H1 消融、先验 / 检索 / 学习基线、样本量、Quality Validation 流程 | v0.4 草案 |
 | 04 | [风险与治理规范](docs/04-risk-and-governance.md) | 患者数据、动作权限分级、人工审批、撤销、审计 | v0.2 框架 |
 | — | [待决问题](docs/open-questions.md) | 需要项目负责人决定的事项 | 持续更新 |
+| — | [审查记录](docs/reviews/) | 每轮设计审查的分析与待决议提案 | 持续更新 |
 
 ## 当前优先级
 

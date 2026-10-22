@@ -15,14 +15,19 @@
 | 编号 | 文件 | 内容 | 状态 |
 |---|---|---|---|
 | 00 | [研究章程](docs/00-research-charter.md) | 目标、非目标、假设、研究问题、成功标准 | v0.3 草案 |
-| 01 | [系统架构说明](docs/01-system-architecture.md) | 双 harness、各层职责边界、决策记录、推荐规则 | v0.2 草案 |
+| 01 | [系统架构说明](docs/01-system-architecture.md) | 双 harness、各层职责边界、决策记录、推荐规则 | v0.3 草案 |
 | 02 | [数据规范](docs/02-data-specification.md) | GD / CE / VI，动作—版本—区域数据链，采集粒度，曲线对应，局部坐标系，质量证据 | v0.5 草案 |
 | 03 | [实验协议](docs/03-experiment-protocol.md) | 假设—对照—终点映射、H1 消融、先验 / 检索 / 学习基线、样本量、Quality Validation 流程 | v0.4 草案 |
-| 04 | [风险与治理规范](docs/04-risk-and-governance.md) | 患者数据、动作权限分级、人工审批、撤销、审计 | v0.2 框架 |
+| 04 | [风险与治理规范](docs/04-risk-and-governance.md) | 患者数据、动作权限分级、人工审批、撤销、审计 | v0.3 框架 |
+| 05 | [Agent Runtime 规范](docs/05-agent-runtime-spec.md) | 不变量、运行模式、状态模型、工具契约、记忆分层、压缩与恢复、权限与数据治理、验收测试 | v0.1 草案 |
 | — | [待决问题](docs/open-questions.md) | 需要项目负责人决定的事项 | 持续更新 |
 | — | [审查记录](docs/reviews/) | 每轮设计审查的分析与待决议提案 | 持续更新 |
 
-## 当前优先级
+## 当前焦点
+
+Agent Runtime 契约（Phase 0，见 [05](docs/05-agent-runtime-spec.md)）。研究设计方面，Q13（H1 主要终点）暂缓决议，见 [审查记录](docs/reviews/2026-10-21-h1-input-label-independence.md)。
+
+## 研究设计优先级
 
 不继续扩展算法路线，也不急着写模型。按第一轮研究设计审查的排序推进：
 

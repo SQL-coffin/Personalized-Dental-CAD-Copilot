@@ -300,7 +300,7 @@ EXECUTING ─┬─▶ SUCCEEDED / POSTCONDITION_FAILED
 | 字段 | 内容 |
 |---|---|
 | `tool_id`、`version` | 工具标识与版本 |
-| `kind` | geometry / data / predictor / llm / adapter / io |
+| `kind` | geometry / data / predictor / llm / adapter / io / research |
 | `tier` | R / S / E（[04](04-risk-and-governance.md) §2） |
 | `modes` | 允许的运行模式 |
 | `input_schema`、`output_schema` | 输入输出结构 |
@@ -312,6 +312,12 @@ EXECUTING ─┬─▶ SUCCEEDED / POSTCONDITION_FAILED
 | `postconditions` | 工具特定的结果检查（例如几何工具必须返回对应状态） |
 | `timeout`、`error_codes` | 超时与错误代码；必须区分「请求未被执行」与「结果不明」 |
 | `egress` | 是否把数据发送到 Runtime 之外（例如外部模型 API），以及发送的数据类别（第 10.6 节） |
+
+**Research Browser 集成**
+
+- Research Browser 的专用工具契约、公开网页抓取约束、挑战暂停/人工恢复、证据字段和 RB-01–RB-15 验收项见 [06 · Research Browser MCP 集成规范](06-research-browser-mcp.md)。
+- 该工具组 MVP 只允许 `tier = R`、`side_effects = none`，且只在 `offline-research` 模式注册；远程 provider 默认关闭。MCP 只提供传输与工具发现，不能替代本 Runtime 的 Tool Registry 或 Policy Gate。
+- 遇到 CAPTCHA、登录要求、速率限制或站点策略阻挡时，必须按第 6.4 节进入 `BLOCKED(human_feedback)` 或适用的预算/策略阻塞状态；模型消息本身不能充当可信人工验证记录。恢复必须走事件日志，并重新执行策略和版本检查。
 
 ### 7.2 调用协议
 

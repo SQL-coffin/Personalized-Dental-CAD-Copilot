@@ -44,4 +44,4 @@
 
 ## 前端交互原型
 
-[`frontend/`](frontend/README.md) 是 CAD Copilot 工作区的交互原型（React + TypeScript），按 05 Agent Runtime 规范 v0.2（`docs/05-agent-runtime-spec.md`，目前在 PR #3 中，尚未合并）的状态、审批与质量闸门规则设计界面，通过类型化的接口与 Runtime 分离。它使用模拟适配器和合成数据，没有连接 CAD；完成原型不代表 Runtime 已实现，也不改变上文的研究阶段。
+[`apps/web/`](apps/web/README.md) 是 CAD Copilot 工作区的交互原型（React + TypeScript），按 05 Agent Runtime 规范 v0.2（`docs/05-agent-runtime-spec.md`，目前在 PR #3 中，尚未合并）的状态、审批与质量闸门规则设计界面，通过类型化的接口与 Runtime 分离。它使用模拟适配器和合成数据，没有连接 CAD；完成原型不代表 Runtime 已实现，也不改变上文的研究阶段。

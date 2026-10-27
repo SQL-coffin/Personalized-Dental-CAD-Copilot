@@ -1,0 +1,25 @@
+{
+  "name": "personalized-dental-cad-copilot",
+  "private": true,
+  "version": "0.1.0",
+  "description": "个性化牙科 CAD Copilot：研究设计与前端原型并行推进（模拟 Runtime，合成数据）",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @cadcopilot/web",
+    "build": "npm run build -w @cadcopilot/web",
+    "preview": "npm run preview -w @cadcopilot/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check": "npm run check:boundaries && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
+  }
+}

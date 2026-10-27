@@ -1,0 +1,15 @@
+{
+  "name": "@cadcopilot/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "UI ↔ Runtime 契约：共享词汇、DTO、端口接口（只有类型与纯规则）",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {}
+}

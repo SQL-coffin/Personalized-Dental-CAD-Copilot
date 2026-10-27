@@ -1,0 +1,17 @@
+{
+  "name": "@cadcopilot/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runtime：任务生命周期、事件日志、策略门控、步骤执行；含进程内模拟主机",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@cadcopilot/contracts": "0.1.0"
+  }
+}

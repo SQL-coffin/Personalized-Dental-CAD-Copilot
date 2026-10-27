@@ -1,0 +1,17 @@
+{
+  "name": "@cadcopilot/agent-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent / Tool Layer：工具定义与注册、工具结果、外部端口（CAD、模型、Research Browser）、Agent ↔ Runtime 会话边界",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@cadcopilot/contracts": "0.1.0"
+  }
+}

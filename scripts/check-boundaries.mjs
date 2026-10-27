@@ -3,9 +3,11 @@
  * Module boundary check. Enforces the dependency direction recorded in
  * docs/architecture/adr/0001-workspace-modules.md:
  *
- *   contracts ← data ← agent-tools ← runtime → research → data
- *                            ↑
- *                     integrations
+ *   data         → contracts
+ *   agent-tools  → contracts
+ *   research     → contracts, data
+ *   runtime      → contracts, data, agent-tools, research
+ *   integrations → contracts, agent-tools
  *   apps/web/src/ui  → contracts only
  *   apps/web/src/app → contracts, runtime, integrations (composition root)
  *
@@ -35,7 +37,7 @@ const LAYERS = [
     name: 'agent-tools',
     dir: 'packages/agent-tools/src',
     manifest: 'packages/agent-tools/package.json',
-    internal: ['@cadcopilot/contracts', '@cadcopilot/data'],
+    internal: ['@cadcopilot/contracts'],
   },
   {
     name: 'research',

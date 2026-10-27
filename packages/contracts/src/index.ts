@@ -9,4 +9,5 @@ export * from './interaction';
 export * from './events';
 export * from './task';
 export * from './rules';
+export * from './hash';
 export * from './ports';

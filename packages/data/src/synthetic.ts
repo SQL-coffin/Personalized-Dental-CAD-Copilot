@@ -14,7 +14,7 @@
  * The number of cases per technician is a demo parameter. The study's case
  * counts are still to be confirmed and are not decided here.
  */
-import type { ArcInterval, CaptureLevel, DisplacementSample } from '@cadcopilot/contracts';
+import { stableHash, type ArcInterval, type CaptureLevel, type DisplacementSample } from '@cadcopilot/contracts';
 import { InMemoryDataStore } from './memoryStore';
 import type {
   CaseCovariates,
@@ -93,15 +93,8 @@ function pick<T>(rng: () => number, weighted: Array<[T, number]>): T {
   return weighted[weighted.length - 1]![0];
 }
 
-/** Non-cryptographic FNV-1a, enough to give synthetic content stable hash-like IDs. */
-export function syntheticHash(input: string): string {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < input.length; i += 1) {
-    h ^= input.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return `sim:${h.toString(16).padStart(8, '0')}`;
-}
+/** Stable hash-like IDs for synthetic content (not a content-addressing hash). */
+export const syntheticHash = stableHash;
 
 const round = (v: number, digits = 1) => Math.round(v * 10 ** digits) / 10 ** digits;
 

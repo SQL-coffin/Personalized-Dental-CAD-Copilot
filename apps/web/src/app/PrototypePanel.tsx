@@ -1,15 +1,16 @@
 import type { RunMode } from '@cadcopilot/contracts';
-import type { ScenarioDef, ScenarioId } from '@cadcopilot/runtime';
+import type { ScenarioDef, ScenarioId, SimulationControls } from '@cadcopilot/runtime';
 
 export interface PrototypeControls {
   mode: RunMode;
   modes: RunMode[];
   setMode: (mode: RunMode) => void;
-  scenarios: Pick<ScenarioDef, 'id' | 'title' | 'description'>[];
+  scenarios: ReadonlyArray<Pick<ScenarioDef, 'id' | 'title' | 'description'>>;
   scenarioId: ScenarioId;
   setScenario: (id: ScenarioId) => void;
   speed: number;
   setSpeed: (speed: number) => void;
+  generator: SimulationControls['generator'];
 }
 
 const MODE_NAME: Record<RunMode, string> = {
@@ -59,6 +60,17 @@ export function PrototypePanel({ controls }: { controls: PrototypeControls }) {
           <option value={3}>3×</option>
         </select>
       </div>
+      <details className="proto-generator">
+        <summary>合成数据的生成假设</summary>
+        <p className="field-help">{controls.generator.description}</p>
+        <ul className="plain-list field-help">
+          {controls.generator.caseEffects.map((e) => (
+            <li key={e}>{e}</li>
+          ))}
+          <li>噪声标准差 {controls.generator.noiseSdUm} μm；随机种子 {controls.generator.seed}</li>
+          <li>每位牙技师 {controls.generator.historicalCasesPerTechnician} 个历史病例（演示参数，不是研究设计）</li>
+        </ul>
+      </details>
     </section>
   );
 }

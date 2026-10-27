@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Runtime：任务生命周期、事件日志、策略门控、步骤执行；含进程内模拟主机",
+  "description": "Runtime：任务生命周期、事件日志、策略门控、步骤执行与 Agent 会话；进程内宿主与模拟环境",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -12,6 +12,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@cadcopilot/contracts": "0.1.0"
+    "@cadcopilot/agent-tools": "0.1.0",
+    "@cadcopilot/contracts": "0.1.0",
+    "@cadcopilot/data": "0.1.0",
+    "@cadcopilot/research": "0.1.0"
   }
 }

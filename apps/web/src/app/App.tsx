@@ -1,12 +1,12 @@
 /**
  * Composition root. The only place that knows the Runtime is simulated: it
- * builds the mock adapter, hands its ports to the product UI and adds the
- * prototype control panel. Swapping in a production adapter means replacing
- * the adapter construction here; nothing under src/ui changes.
+ * assembles the simulated runtime (or, later, a transport to a real one),
+ * hands its ports to the product UI and adds the prototype control panel.
+ * Nothing under src/ui changes when the Runtime behind the ports changes.
  */
 import { useMemo, useState } from 'react';
 import type { RunMode } from '@cadcopilot/contracts';
-import { MockRuntime, adjustableScheduler, scenariosFor, type Scheduler, type ScenarioId } from '@cadcopilot/runtime';
+import { adjustableScheduler, createSimulatedRuntime, type Scheduler, type ScenarioId } from '@cadcopilot/runtime';
 import { RuntimeBoot } from '../ui/RuntimeBoot';
 import { PrototypePanel } from './PrototypePanel';
 
@@ -51,17 +51,15 @@ function SimulatedDeployment(props: {
   initialScenario?: ScenarioId;
   failDeploymentTimes?: number;
 }) {
-  const [runtime] = useState(() => {
-    const rt = new MockRuntime({
+  const [sim] = useState(() =>
+    createSimulatedRuntime({
       mode: props.mode,
       scheduler: props.scheduler,
+      ...(props.initialScenario ? { scenario: props.initialScenario } : {}),
       ...(props.failDeploymentTimes !== undefined ? { failDeploymentTimes: props.failDeploymentTimes } : {}),
-    });
-    if (props.initialScenario) rt.setNextScenario(props.initialScenario);
-    return rt;
-  });
-  const ports = useMemo(() => runtime.ports(), [runtime]);
-  const [scenarioId, setScenarioId] = useState<ScenarioId>(runtime.scenarioId);
+    }),
+  );
+  const [scenarioId, setScenarioId] = useState<ScenarioId>(sim.controls.scenarioId);
 
   const panel = (
     <PrototypePanel
@@ -69,16 +67,17 @@ function SimulatedDeployment(props: {
         mode: props.mode,
         modes: MODES,
         setMode: props.setMode,
-        scenarios: scenariosFor(props.mode),
+        scenarios: sim.controls.scenarios,
         scenarioId,
         setScenario: (id) => {
-          runtime.setNextScenario(id);
+          sim.controls.setScenario(id);
           setScenarioId(id);
         },
         speed: props.speed,
         setSpeed: props.setSpeed,
+        generator: sim.controls.generator,
       }}
     />
   );
-  return <RuntimeBoot ports={ports} sidebarFooter={panel} />;
+  return <RuntimeBoot ports={sim.ports} sidebarFooter={panel} />;
 }

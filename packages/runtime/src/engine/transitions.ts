@@ -1,9 +1,8 @@
 /**
- * Transition tables copied from docs/05 §6.3 (task) and §6.5 (step).
- *
- * Used only by the mock runtime so that simulated flows cannot demonstrate a
- * transition the contract forbids. A real Runtime enforces its own tables;
- * the UI never consults these.
+ * Transition tables copied from docs/05 §6.3 (task) and §6.5 (step). The
+ * engine checks every change against them, so neither an agent nor a
+ * simulated scenario can drive a task through a transition the contract
+ * forbids. The UI never consults these: it renders the Runtime's snapshot.
  */
 import type { BlockedReason, StepState, TaskState } from '@cadcopilot/contracts';
 

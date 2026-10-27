@@ -62,6 +62,8 @@ export interface CandidateProposal {
   regions: CandidateRegion[];
   /** Displacement samples inside MATCHED regions only; null when nothing pointwise can be proposed. */
   geometry: CandidateGeometry | null;
+  /** Regions the proposal is based on (expected to change); the gate checks their correspondence. */
+  basisRegionIds: string[];
   preference: PreferenceEstimate;
   provenance: Provenance;
   /** Historical cases behind the proposal, with their stance. */

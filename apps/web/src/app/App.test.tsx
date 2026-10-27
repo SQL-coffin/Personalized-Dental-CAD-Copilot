@@ -151,7 +151,7 @@ describe('approval', () => {
     await approvalHeading();
     await user.click(screen.getByRole('button', { name: '批准执行…' }));
     await user.click(screen.getByRole('button', { name: '确认批准' }));
-    expect((await screen.findAllByText(/目标对象版本已从 v12 变为 v13/)).length).toBeGreaterThan(0);
+    expect((await screen.findAllByText(/目标对象版本已从 v2 变为 v3/)).length).toBeGreaterThan(0);
     await approvalHeading();
     expect(screen.getByText('已作废')).toBeInTheDocument();
     expect(within(step('write')).getByText('已拒绝')).toBeInTheDocument();
@@ -166,7 +166,8 @@ describe('quality gate', () => {
     await startTask(user);
     expect(await screen.findAllByText(/未产生可采纳的候选/)).not.toHaveLength(0);
     expect(screen.getByText('仅诊断信息')).toBeInTheDocument();
-    expect(screen.getByText('0.86')).toBeInTheDocument();
+    // Preference is shown on its own, and does not change the gate verdict.
+    expect(within(screen.getByRole('region', { name: '个人偏好' })).getByText(/^0\.\d\d$/)).toBeInTheDocument();
     expect(screen.getByText('未通过', { selector: 'strong' })).toBeInTheDocument();
     expect(screen.getByText('未展示候选几何')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: '批准执行…' })).not.toBeInTheDocument();

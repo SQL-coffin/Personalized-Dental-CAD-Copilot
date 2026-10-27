@@ -3,7 +3,7 @@
  * the Runtime's step executor, and returns a result the Runtime classifies
  * (§7.3). Tools never change task state themselves.
  */
-import type { EgressCategory, RunMode, ToolErrorCode, ToolRef, VersionRef } from '@cadcopilot/contracts';
+import type { EgressCategory, QualityGateResult, RunMode, ToolErrorCode, ToolRef, VersionRef } from '@cadcopilot/contracts';
 import type { CandidateProposal } from './io';
 
 /** §10.4 data partitions a tool may read. */
@@ -68,6 +68,7 @@ export interface RegisteredCandidate {
   candidateId: string;
   candidateHash: string;
   proposal: CandidateProposal;
+  gate?: QualityGateResult;
 }
 
 export interface ToolContext {

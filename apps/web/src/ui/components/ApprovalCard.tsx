@@ -149,7 +149,7 @@ export function ApprovalCard({
           </>
         )
       )}
-      {submission.status === 'error' && <InlineError>{submission.error}</InlineError>}
+      {submission.status === 'error' && <InlineError code={submission.code}>{submission.error}</InlineError>}
     </section>
   );
 }

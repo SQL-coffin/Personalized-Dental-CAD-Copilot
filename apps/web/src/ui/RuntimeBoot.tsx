@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { RuntimeClientError, type CaseSummary, type DeploymentInfo, type RuntimePorts } from '@cadcopilot/contracts';
+import type { CaseSummary, DeploymentInfo, RuntimePorts } from '@cadcopilot/contracts';
 import { StatusIcon } from './components/primitives';
-import { errorMessage } from './hooks';
+import { describeError } from './hooks';
 import { Workspace } from './Workspace';
 
 type Boot =
   | { status: 'loading' }
-  | { status: 'error'; error: string; retryable: boolean }
+  | { status: 'error'; error: string; code: string; retryable: boolean }
   | { status: 'ready'; deployment: DeploymentInfo; cases: CaseSummary[] };
 
 /** Connects to the Runtime, then renders the workspace; handles loading and failure. */
@@ -24,11 +24,8 @@ export function RuntimeBoot({ ports, sidebarFooter }: { ports: RuntimePorts; sid
         if (alive) setBoot({ status: 'ready', deployment, cases });
       } catch (err) {
         if (alive) {
-          setBoot({
-            status: 'error',
-            error: errorMessage(err),
-            retryable: err instanceof RuntimeClientError ? err.retryable : true,
-          });
+          const info = describeError(err);
+          setBoot({ status: 'error', error: info.message, code: info.code, retryable: info.retryable });
         }
       }
     })();
@@ -52,7 +49,10 @@ export function RuntimeBoot({ ports, sidebarFooter }: { ports: RuntimePorts; sid
       <div className="boot boot-error" role="alert">
         <StatusIcon tone="danger" />
         <h1>无法连接 Agent Runtime</h1>
-        <p>{boot.error}</p>
+        <p>
+          {boot.error}
+          <span className="code-chip">{boot.code}</span>
+        </p>
         <p className="muted-text">在连接恢复之前，不会显示任何任务状态或审批。</p>
         {boot.retryable && (
           <button type="button" className="btn btn-primary" onClick={retry}>

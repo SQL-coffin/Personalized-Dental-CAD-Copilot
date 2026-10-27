@@ -94,7 +94,7 @@ export function BlockedBanner({
         </div>
       )}
       {waiting && <Pending>已提交（回执 {submission.receipt.receiptId}），等待 Runtime 记录并恢复任务…</Pending>}
-      {submission.status === 'error' && <InlineError>{submission.error}</InlineError>}
+      {submission.status === 'error' && <InlineError code={submission.code}>{submission.error}</InlineError>}
     </section>
   );
 }

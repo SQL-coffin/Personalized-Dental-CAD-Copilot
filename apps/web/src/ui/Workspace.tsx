@@ -1,6 +1,7 @@
 import { useCallback, useState, type ReactNode } from 'react';
 import type { CaseSummary, DeploymentInfo, RuntimePorts } from '@cadcopilot/contracts';
 import { BlockedBanner } from './components/BlockedBanner';
+import { CaseRecordPanel } from './components/CaseRecordPanel';
 import { Conversation } from './components/Conversation';
 import { DiagnosticsPanel } from './components/DiagnosticsPanel';
 import { HeaderBar, SimulationBanner } from './components/HeaderBar';
@@ -27,7 +28,7 @@ export function Workspace({
   cases: CaseSummary[];
   sidebarFooter?: ReactNode;
 }) {
-  const { runtime, approvals, feedback } = ports;
+  const { runtime, approvals, feedback, records } = ports;
   const tasks = useTaskList(runtime);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { load, reload } = useTask(runtime, selectedId);
@@ -71,7 +72,7 @@ export function Workspace({
               {load.status === 'loading' && <Pending>正在加载任务…</Pending>}
               {load.status === 'error' && (
                 <div className="error-state">
-                  <InlineError>无法加载任务：{load.error}</InlineError>
+                  <InlineError code={load.code}>无法加载任务：{load.error}</InlineError>
                   <button type="button" className="btn btn-secondary" onClick={reload}>
                     重试
                   </button>
@@ -110,7 +111,8 @@ export function Workspace({
                   {review}
                 </>
               )}
-              {load.status === 'ready' && <DiagnosticsPanel task={task} events={load.events} />}
+              {records && task.caseId && <CaseRecordPanel key={task.caseId} records={records} caseId={task.caseId} />}
+              {load.status === 'ready' && <DiagnosticsPanel task={task} events={load.events} integrations={deployment.integrations} />}
             </>
           ) : (
             <p className="empty-note inspector-empty">选择或新建任务后，这里会显示执行计划、候选与审批。</p>

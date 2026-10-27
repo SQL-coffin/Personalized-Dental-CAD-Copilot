@@ -10,10 +10,11 @@ import { ManualScheduler, instantScheduler, type ScenarioId } from '@cadcopilot/
 import type { RunMode } from '@cadcopilot/contracts';
 import { App } from './App';
 
-function setup(opts: { mode?: RunMode; scenario?: ScenarioId; scheduler?: ManualScheduler; failDeploymentTimes?: number } = {}) {
+function setup(opts: { mode?: RunMode; scenario?: ScenarioId; scheduler?: ManualScheduler; failDeploymentTimes?: number; transport?: 'simulated' | 'http' } = {}) {
   const user = userEvent.setup();
   render(
     <App
+      transport={opts.transport ?? 'simulated'}
       initialMode={opts.mode ?? 'assist-execute'}
       scheduler={opts.scheduler ?? instantScheduler}
       {...(opts.scenario ? { initialScenario: opts.scenario } : {})}
@@ -62,6 +63,14 @@ describe('connection states', () => {
     expect(screen.queryByText('审阅与审批')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '重试' }));
     expect(await screen.findByRole('heading', { name: '要让 Copilot 做什么？' })).toBeInTheDocument();
+  });
+
+  it('a networked Runtime is a placeholder: the UI says so and offers no pointless retry', async () => {
+    setup({ transport: 'http' });
+    const alert = await screen.findByRole('alert');
+    expect(within(alert).getByText('NOT_IMPLEMENTED')).toBeInTheDocument();
+    expect(within(alert).getByText(/HTTP\/SSE 传输尚未实现/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '重试' })).not.toBeInTheDocument();
   });
 
   it('validates the task form', async () => {
@@ -267,9 +276,41 @@ describe('diagnostics', () => {
     await startTask(user);
     expect(await screen.findAllByText(/已展示候选（S 级建议）/)).not.toHaveLength(0);
     expect(screen.queryByText(/事件日志/)).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '展开' }));
+    await user.click(within(screen.getByRole('region', { name: '高级诊断' })).getByRole('button', { name: '展开' }));
     expect(screen.getByText(/事件日志/)).toBeInTheDocument();
     expect(screen.getAllByText('TaskCreated').length).toBe(1);
+  });
+});
+
+describe('data layer', () => {
+  it('shows the case record and the approved Copilot version once written, still unconfirmed', async () => {
+    const user = setup();
+    await startTask(user);
+    await approvalHeading();
+    await user.click(screen.getByRole('button', { name: '批准执行…' }));
+    await user.click(screen.getByRole('button', { name: '确认批准' }));
+    await screen.findByText('已写入 CAD');
+    const panel = screen.getByRole('region', { name: '病例记录' });
+    await user.click(within(panel).getByRole('button', { name: '展开' }));
+    const versions = await within(panel).findByRole('list', { name: '设计版本' });
+    const newest = within(versions).getAllByRole('listitem')[0]!;
+    expect(within(newest).getByText('Copilot 执行')).toBeInTheDocument();
+    expect(within(newest).getByText(/审批 apr-/)).toBeInTheDocument();
+    expect(within(newest).getByText('当前')).toBeInTheDocument();
+    expect(within(panel).getByText('未确认')).toBeInTheDocument();
+    expect(within(panel).getByText('模拟牙技师 01', { exact: false })).toBeInTheDocument();
+    expect(within(panel).getByText(/不等于个人偏好/)).toBeInTheDocument();
+  });
+
+  it('lists integrations as simulated or placeholder, and records model calls', async () => {
+    const user = setup({ mode: 'assist' });
+    await startTask(user);
+    expect(await screen.findAllByText(/已展示候选（S 级建议）/)).not.toHaveLength(0);
+    await user.click(within(screen.getByRole('region', { name: '高级诊断' })).getByRole('button', { name: '展开' }));
+    expect(screen.getByText('集成与适配器')).toBeInTheDocument();
+    expect(screen.getAllByText('模拟').length).toBeGreaterThan(0);
+    expect(screen.getByText(/模型调用（\d+）/)).toBeInTheDocument();
+    expect(screen.getAllByText('（脚本，未调用模型）').length).toBeGreaterThan(0);
   });
 });
 

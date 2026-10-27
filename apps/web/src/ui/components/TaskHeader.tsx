@@ -90,7 +90,7 @@ export function TaskHeader({
               取消任务
             </button>
           )}
-          {submission.status === 'error' && <InlineError>{submission.error}</InlineError>}
+          {submission.status === 'error' && <InlineError code={submission.code}>{submission.error}</InlineError>}
         </div>
       )}
 

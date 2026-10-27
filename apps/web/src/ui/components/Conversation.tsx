@@ -91,7 +91,7 @@ function FollowUp({ task, runtime }: { task: TaskSnapshot; runtime: RuntimeClien
           发送
         </button>
       </div>
-      {submission.status === 'error' && <InlineError>{submission.error}</InlineError>}
+      {submission.status === 'error' && <InlineError code={submission.code}>{submission.error}</InlineError>}
     </form>
   );
 }

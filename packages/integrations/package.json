@@ -1,0 +1,18 @@
+{
+  "name": "@cadcopilot/integrations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Integration Layer：真实 Runtime 传输、牙科 CAD、Research-Browser-MCP、模型提供方的适配边界（当前均为占位，不实现外部调用）",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@cadcopilot/agent-tools": "0.1.0",
+    "@cadcopilot/contracts": "0.1.0"
+  }
+}

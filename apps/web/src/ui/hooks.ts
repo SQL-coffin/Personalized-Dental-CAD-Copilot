@@ -1,18 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  RuntimeClientError,
+  toErrorInfo,
+  type CaseRecordView,
+  type ErrorInfo,
   type EventEnvelope,
   type Receipt,
+  type RecordsClient,
   type RuntimeClient,
   type TaskSnapshot,
   type TaskSummary,
   type TaskUpdate,
 } from '@cadcopilot/contracts';
 
+/** Every error, from any layer, reduced to one shape for display. */
+export function describeError(err: unknown): ErrorInfo {
+  return toErrorInfo(err);
+}
+
 export function errorMessage(err: unknown): string {
-  if (err instanceof RuntimeClientError) return err.message;
-  if (err instanceof Error) return err.message;
-  return String(err);
+  return describeError(err).message;
 }
 
 export function useTaskList(runtime: RuntimeClient): TaskSummary[] {
@@ -43,7 +49,7 @@ function mergeUpdate(state: TaskState, update: TaskUpdate): TaskState {
 export type TaskLoad =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'error'; error: string }
+  | { status: 'error'; error: string; code: string }
   | { status: 'ready'; snapshot: TaskSnapshot; events: EventEnvelope[] };
 
 /** Snapshot + event log of one task, kept current through the subscription. */
@@ -79,7 +85,11 @@ export function useTask(runtime: RuntimeClient, taskId: string | null): { load: 
         current = merged;
         setLoad({ status: 'ready', ...merged });
       })
-      .catch((err) => alive && setLoad({ status: 'error', error: errorMessage(err) }));
+      .catch((err) => {
+        if (!alive) return;
+        const info = describeError(err);
+        setLoad({ status: 'error', error: info.message, code: info.code });
+      });
     return () => {
       alive = false;
       unsubscribe();
@@ -94,7 +104,7 @@ export type Submission =
   | { status: 'idle' }
   | { status: 'submitting' }
   | { status: 'submitted'; receipt: Receipt }
-  | { status: 'error'; error: string };
+  | { status: 'error'; error: string; code: string };
 
 /**
  * Tracks a request to the Runtime. 'submitted' only means the Runtime
@@ -119,9 +129,36 @@ export function useSubmission(): {
       const receipt = await fn();
       if (alive.current) setSubmission({ status: 'submitted', receipt });
     } catch (err) {
-      if (alive.current) setSubmission({ status: 'error', error: errorMessage(err) });
+      const info = describeError(err);
+      if (alive.current) setSubmission({ status: 'error', error: info.message, code: info.code });
     }
   }, []);
   const reset = useCallback(() => setSubmission({ status: 'idle' }), []);
   return { submission, submit, reset };
+}
+
+export type RecordLoad =
+  | { status: 'loading' }
+  | { status: 'error'; error: ErrorInfo }
+  | { status: 'ready'; record: CaseRecordView };
+
+/** A case record, refreshed whenever the data layer reports a change for the case. */
+export function useCaseRecord(records: RecordsClient, caseId: string): RecordLoad {
+  const [load, setLoad] = useState<RecordLoad>({ status: 'loading' });
+  useEffect(() => {
+    let alive = true;
+    const fetchRecord = () =>
+      records
+        .getCaseRecord(caseId)
+        .then((record) => alive && setLoad({ status: 'ready', record }))
+        .catch((err) => alive && setLoad({ status: 'error', error: describeError(err) }));
+    setLoad({ status: 'loading' });
+    void fetchRecord();
+    const unsubscribe = records.subscribeCase(caseId, () => void fetchRecord());
+    return () => {
+      alive = false;
+      unsubscribe();
+    };
+  }, [records, caseId]);
+  return load;
 }

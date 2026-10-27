@@ -21,6 +21,12 @@ export function HeaderBar({ deployment }: { deployment: DeploymentInfo }) {
         </Badge>
         {deployment.simulated && <Badge tone="waiting">模拟部署</Badge>}
         <Badge tone={deployment.cadConnected ? 'success' : 'muted'}>{deployment.cadConnected ? 'CAD 已连接' : 'CAD 未连接'}</Badge>
+        <Badge
+          tone={deployment.integrations.every((i) => i.implementation === 'connected') ? 'success' : 'waiting'}
+          title={deployment.integrations.map((i) => `${i.label}：${i.implementation}`).join('\n')}
+        >
+          集成：{deployment.integrations.filter((i) => i.implementation !== 'connected').length} 项未接真实系统
+        </Badge>
         <Badge tone="neutral" title="当前模式下注册的工具；未注册的级别根本不存在">
           工具 {deployment.registeredTools.length} 个{eTools === 0 ? ' · 无写入工具' : ` · 含 ${eTools} 个 E 级`}
         </Badge>

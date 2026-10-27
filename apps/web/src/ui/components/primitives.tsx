@@ -86,10 +86,11 @@ export function Mono({ children }: { children: ReactNode }) {
   return <code className="mono">{children}</code>;
 }
 
-export function InlineError({ children }: { children: ReactNode }) {
+export function InlineError({ children, code }: { children: ReactNode; code?: string }) {
   return (
     <p className="inline-error" role="alert">
       {children}
+      {code && <span className="code-chip">{code}</span>}
     </p>
   );
 }

@@ -6,9 +6,11 @@
  */
 import { useMemo, useState } from 'react';
 import type { RunMode } from '@cadcopilot/contracts';
+import { createHttpRuntimePorts } from '@cadcopilot/integrations';
 import { adjustableScheduler, createSimulatedRuntime, type Scheduler, type ScenarioId } from '@cadcopilot/runtime';
 import { RuntimeBoot } from '../ui/RuntimeBoot';
 import { PrototypePanel } from './PrototypePanel';
+import { readRuntimeConfig, type RuntimeTransport } from './runtimeConfig';
 
 const MODES: RunMode[] = ['assist-execute', 'assist', 'offline-research'];
 
@@ -18,9 +20,23 @@ export interface AppProps {
   /** Tests inject a deterministic scheduler; the browser uses real time. */
   scheduler?: Scheduler;
   failDeploymentTimes?: number;
+  /** Overrides VITE_RUNTIME_TRANSPORT (used by tests). */
+  transport?: RuntimeTransport;
 }
 
-export function App({ initialMode = 'assist-execute', ...rest }: AppProps) {
+export function App({ initialMode = 'assist-execute', transport, ...rest }: AppProps) {
+  const config = useMemo(() => readRuntimeConfig(), []);
+  if ((transport ?? config.transport) === 'http') return <NetworkedRuntime baseUrl={config.baseUrl} />;
+  return <SimulatedApp initialMode={initialMode} {...rest} />;
+}
+
+/** A Runtime in its own process. Placeholder transport: the UI reports it as not implemented. */
+function NetworkedRuntime({ baseUrl }: { baseUrl: string }) {
+  const ports = useMemo(() => createHttpRuntimePorts({ baseUrl }), [baseUrl]);
+  return <RuntimeBoot ports={ports} />;
+}
+
+function SimulatedApp({ initialMode = 'assist-execute', ...rest }: Omit<AppProps, 'transport'>) {
   const [mode, setMode] = useState<RunMode>(initialMode);
   const realtime = useMemo(() => adjustableScheduler(1), []);
   const [speed, setSpeed] = useState(1);

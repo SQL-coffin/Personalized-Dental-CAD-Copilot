@@ -1,0 +1,17 @@
+{
+  "name": "@cadcopilot/data",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Data Layer：病例、分配、会话、设计版本图、操作、几何差异、结果记录（docs/02）；分配约束；内存存储与合成数据",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@cadcopilot/contracts": "0.1.0"
+  }
+}

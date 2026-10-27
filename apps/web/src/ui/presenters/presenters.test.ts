@@ -153,8 +153,9 @@ describe('approvalAvailability', () => {
     policyVersion: 'p',
     gateCriteriaSetVersion: 's1',
     registeredTools: [step(null).tool],
-    capabilities: { cancelTask: true, humanFeedback: true, approvals: true, caseSelection: true },
+    capabilities: { cancelTask: true, humanFeedback: true, approvals: true, caseSelection: true, caseRecords: true },
     identity: { userId: 'u', displayName: 'U', authenticated: true },
+    integrations: [],
   };
   const request: ApprovalRequest = {
     approvalRequestId: 'r',

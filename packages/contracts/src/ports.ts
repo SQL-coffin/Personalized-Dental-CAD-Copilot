@@ -1,27 +1,24 @@
 /**
  * UI ↔ Agent Runtime contract: ports.
  *
- * Three separate interfaces on purpose:
+ * Separate interfaces on purpose:
  *  - RuntimeClient: reads, task creation, conversation, cancellation.
  *  - ApprovalChannel: the §10.3 approval channel, independent of the model
  *    conversation (I4). Nothing sent through RuntimeClient.postMessage can
  *    produce an approval.
  *  - HumanFeedbackChannel: §6.4 human responses bound to a task and the
  *    reason it is blocked.
+ *  - RecordsClient: read-only case records (data layer projections).
  *
  * A channel is null when the deployment does not offer it; the UI then hides
  * the corresponding controls instead of showing a control that cannot work.
  */
-import type {
-  ApprovalDecision,
-  BlockedReason,
-  CaseSummary,
-  DeploymentInfo,
-  EventEnvelope,
-  HumanResponseKind,
-  TaskSnapshot,
-  TaskSummary,
-} from './types';
+import type { ApprovalDecision } from './approvals';
+import type { CaseRecordView, CaseSummary } from './cases';
+import type { DeploymentInfo } from './deployment';
+import type { EventEnvelope } from './events';
+import type { HumanResponseKind } from './interaction';
+import type { BlockedReason, TaskSnapshot, TaskSummary } from './task';
 
 export interface TaskUpdate {
   snapshot: TaskSnapshot;
@@ -87,8 +84,15 @@ export interface HumanFeedbackChannel {
   submit(input: HumanFeedbackInput): Promise<Receipt>;
 }
 
+export interface RecordsClient {
+  getCaseRecord(caseId: string): Promise<CaseRecordView>;
+  /** Fires when anything recorded for the case changes (new version, action, outcome). */
+  subscribeCase(caseId: string, listener: () => void): Unsubscribe;
+}
+
 export interface RuntimePorts {
   runtime: RuntimeClient;
   approvals: ApprovalChannel | null;
   feedback: HumanFeedbackChannel | null;
+  records: RecordsClient | null;
 }

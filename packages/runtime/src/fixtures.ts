@@ -101,6 +101,8 @@ export const SIM_CASES: CaseSummary[] = [
     currentVersion: { versionId: 'v12', contentHash: 'sha256:sim9f2c41' },
     captureLevel: 'C3',
     synthetic: true,
+    assignedTechnician: { technicianId: 'tech-sim-01', pseudonym: '模拟牙技师 01' },
+    status: 'open',
   },
   {
     caseId: 'case-sim-0002',
@@ -111,6 +113,8 @@ export const SIM_CASES: CaseSummary[] = [
     currentVersion: { versionId: 'v7', contentHash: 'sha256:sim03ab7e' },
     captureLevel: 'C2',
     synthetic: true,
+    assignedTechnician: { technicianId: 'tech-sim-01', pseudonym: '模拟牙技师 01' },
+    status: 'open',
   },
   {
     caseId: 'case-sim-0003',
@@ -121,6 +125,8 @@ export const SIM_CASES: CaseSummary[] = [
     currentVersion: { versionId: 'v4', contentHash: 'sha256:sim77d0e5' },
     captureLevel: 'C1',
     synthetic: true,
+    assignedTechnician: { technicianId: 'tech-sim-01', pseudonym: '模拟牙技师 01' },
+    status: 'open',
   },
 ];
 

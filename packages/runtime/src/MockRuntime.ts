@@ -667,8 +667,10 @@ export class MockRuntime {
         approvals: mode === 'assist-execute',
         // 06 §1: research tasks never read case data.
         caseSelection: mode !== 'offline-research',
+        caseRecords: false,
       },
       identity: SIM_IDENTITY,
+      integrations: [],
     };
   }
 
@@ -706,6 +708,7 @@ export class MockRuntime {
       runtime,
       approvals: this.deployment.capabilities.approvals ? approvals : null,
       feedback: this.deployment.capabilities.humanFeedback ? feedback : null,
+      records: null,
     };
   }
 
@@ -810,6 +813,7 @@ export class MockRuntime {
       candidates: [],
       decisions: [],
       approvalRequests: [],
+      modelCalls: [],
       budget: {
         rounds: { used: 0, limit: 6 },
         replans: { used: 0, limit: 4 },

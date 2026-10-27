@@ -132,6 +132,7 @@ export const ERROR_CODE_LABEL: Record<ToolErrorCode, string> = {
   NOT_EXECUTED: '未执行',
   POSTCONDITION_FAILED: '后置条件未通过',
   NOT_REGISTERED: '工具未注册',
+  NOT_CONFIGURED: '适配器未配置',
 };
 
 export const RESPONSE_LABEL: Record<HumanResponseKind, string> = {
